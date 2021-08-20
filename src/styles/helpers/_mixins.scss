@@ -1,0 +1,7 @@
+@mixin square($color, $width, $height){
+	color: $color;
+	width: $width;
+	height: $height;
+	display: flex;
+	opacity: 0.5;
+}
