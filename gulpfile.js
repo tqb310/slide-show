@@ -7,7 +7,12 @@ const autoPrefixer = require('gulp-autoprefixer');
 const uglify = require('gulp-uglify');
 const cssnano = require('gulp-cssnano');
 const gulpIf = require('gulp-if');
+const cache  = require('gulp-cache');
+const {gifsicle, mozjpeg, optipng, svgo} = require('gulp-imagemin');
+const imagemin = require('gulp-imagemin');
+const del = require('del');
 
+//Path
 const options = {
 	pug: {
 		src: 'src/views/*.pug',
@@ -24,7 +29,7 @@ const options = {
 		dest: 'dist',
 	},
 	image: {
-		src: 'src/images/*.+[png|jpg|jpeg|svg|gif]',
+		src: 'src/images/*.+(png|jpg|jpeg|svg|gif)',
 		dest: 'dist/images'
 	},
 	script: {
@@ -47,7 +52,10 @@ task('pug', function(){
 task('scss', function(){
 	return src(options.style.src)
 		.pipe(sass().on('error', sass.logError))
-		.pipe(autoPrefixer())
+		.pipe(autoPrefixer({
+			cascade: false,
+			grid: true
+		}))
 		.pipe(cssnano())
 		.pipe(dest(options.style.dest))
 		.pipe(browserSync.reload(
@@ -66,6 +74,32 @@ task('html', function(){
 		))
 })
 
+//OUTPUT: image files in dist
+task('image', function(){
+	return src(options.image.src)
+			.pipe(cache(imagemin([
+				gifsicle({interlaced: true}),
+				mozjpeg({quality: 75, progressive: true}),
+				optipng({optimizationLevel: 5}),
+				svgo({
+					plugins: [
+						{removeViewBox: true},
+						{cleanupIDs: false}
+					]
+				})	
+			], {
+				verbose: true
+			})
+		))
+		.pipe(dest(options.image.dest));
+})
+
+//Clear cache
+task('clearCache', function(){
+	cache.clearAll();
+})
+
+//Init local server
 function initServer() {
 	browserSync.init({
 		server: {
@@ -75,12 +109,19 @@ function initServer() {
 	});
 }
 
-
+//Hot reloading
 function watchFiles() {
 	watch(options.pug.all, series('pug'));
 	watch(options.style.all, series('scss'));
 	watch([options.html.src, options.script.all], series('html'));	
 }
-exports.build = series('pug', parallel('scss', 'html'));
+
+//Clean dist
+task('cleanDist',async function(){
+	return del.sync('dist')
+})
+
+
+exports.build = series(parallel('cleanDist','pug'), parallel('scss','html','image'));
 exports.run = parallel(initServer, watchFiles);
 
