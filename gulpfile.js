@@ -11,7 +11,6 @@ const cache  = require('gulp-cache');
 const {gifsicle, mozjpeg, optipng, svgo} = require('gulp-imagemin');
 const imagemin = require('gulp-imagemin');
 const del = require('del');
-
 //Path
 const options = {
 	pug: {
@@ -95,7 +94,7 @@ task('image', function(){
 })
 
 //Clear cache
-task('clearCache', function(){
+task('clearCache',async function(){
 	cache.clearAll();
 })
 
@@ -118,10 +117,8 @@ function watchFiles() {
 
 //Clean dist
 task('cleanDist',async function(){
-	return del.sync('dist')
+	return del.sync(['dist', 'src/*.html'])
 })
 
-
-exports.build = series(parallel('cleanDist','pug'), parallel('scss','html','image'));
-exports.run = parallel(initServer, watchFiles);
-
+task('build', series(parallel('cleanDist','pug'), parallel('scss','html','image')))
+exports.run = series('build', parallel(initServer, watchFiles));
