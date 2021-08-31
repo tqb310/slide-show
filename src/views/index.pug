@@ -1,0 +1,19 @@
+extend layout/common.pug
+
+block styles
+    link(rel="stylesheet", href="styles/index.css")
+block content
+    .container
+        span(class='container__control prev') &#10094;
+        span(class='container__control next') &#10095;
+        img(class="cover" src="" alt="image")
+        .container__slideshow
+            - var imgs = ["https://64.media.tumblr.com/d1b06afb69cf8b615690ff734129e902/f04605d2cb559bfc-d8/s1280x1920/f91d82446d71c5ee9ace99af4936adcd5549d93f.jpg","https://64.media.tumblr.com/a22dda63a0e8494c72014ba494697cad/3107f3becb2c1c93-84/s1280x1920/63adcda31e4e6c9a9c99d2a99d848838ee398f2c.jpg","https://64.media.tumblr.com/8557efab510c5fde895b13e7ec0b9a02/a18bea4e7acd8b18-b0/s1280x1920/fde6d88a3e7293d333eb485f7e0cfb2ccc5fef88.jpg","https://64.media.tumblr.com/7c367a2afa980cc707c235dba9209f91/tumblr_ptjwbdpM0b1qzer7p_1280.png"]
+            each img in imgs
+                img(src=img, alt="image")             
+       
+block scripts
+    //build:js scripts/index.js
+    script(src="scripts/helpers.js")
+    script(src="scripts/index.js")
+    //endbuild

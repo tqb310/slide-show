@@ -1,0 +1,70 @@
+@use "sass:math";
+@import 'helpers/mixins.scss';
+$a : 1,2,3,4;
+.container{
+    height: 40vh;
+    width: 60%;
+    margin: 50px auto;
+    border: 1px solid black; 
+    position: relative;
+    overflow: hidden;
+    &:hover {        
+        .container__control {
+            display: inline-block;
+            animation: visible 0.5s;
+        }
+    }   
+    &__slideshow {        
+        display: flex; 
+        height: 100%;
+        transition: all .4s ;        
+        img {
+           width: 100%;           
+           object-fit: cover;
+           animation: fade 1.5s;
+        }                     
+    }
+    &__control {
+        z-index: 2;
+        font: {
+            size: 2rem;
+            weight: 700;
+        }
+        color: white;
+        position: absolute;
+        top: 50%;        
+        transform: translateY(-35px);
+        cursor: pointer;
+        padding: 1rem;
+        user-select: none;
+        transition: all .4s;
+        display: none;
+        &:hover {
+            background-color: rgba(240,240,240, 0.7);
+        }
+        &:active {
+            background-color: rgba(240,240,240, 1);
+        }          
+    }
+    .cover {
+        display: none;    
+        position: absolute;
+        z-index: 1;
+        object-fit: cover;
+        width: 100%;
+        height: 100%;       
+    }
+    .next {
+        right: 0;
+    }
+}
+
+@keyframes visible {
+    from {padding: 1rem 0;}
+    to {padding: 1rem}
+}
+
+@keyframes fade {
+    from {opacity: 0.5;}
+    to {opacity: 1;}
+}
