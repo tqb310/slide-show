@@ -112,7 +112,7 @@ function initServer() {
 function watchFiles() {
 	watch(options.pug.all, series('pug'));
 	watch(options.style.all, series('scss'));
-	watch([options.html.src, options.script.all], series('html'));	
+	watch([options.html.src, options.script.all], series('html'));		
 }
 
 //Clean dist
